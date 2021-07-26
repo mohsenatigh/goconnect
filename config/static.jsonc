@@ -1,0 +1,177 @@
+{
+  /***/
+  "sslvpn":{
+     /**/
+     "enable" : true,
+
+     /*Make it possible to manage the VPN from the tunnel channel*/
+     "inbound_management" : true,
+
+     /*SSL certification file. in case of an empty path, the system will generate a new self-signed certificate */
+     "certificate":"/etc/goconnect/crt.pem",
+
+      /*SSL key file.*/
+     "key":"/etc/goconnect/key.pem",
+
+     /*Listen address*/
+     "server_address":"0.0.0.0:443",
+
+     /*Dead-Peer detection interval in second (min:1,max:60)*/
+     "dpd_interval":5,
+
+     /*Clients netmak*/
+     "net_mask":"255.255.255.0",
+    
+     /*By default the client will route all the traffics through the tunnel. By using this you can define which traffics should be routed through the tunnel (min:0,max:256)*/
+     "split_tunnels":[],
+
+     /**/
+     "tunnel_dns":true,
+     
+     /*Keep-alive packet interval in second  (min:10,max:600)*/
+     "keepalive_interval":10,
+
+     /*second (min:600,max:86400)*/
+     "idle_timeout":3600,
+
+     /*client side MTU (min:1100,max:1500)*/
+     "mtu":1430,
+
+     /*Remove unused authentication tokens after this period in second (min:10,3600)*/
+     "inactive_sessions_timeout":300,
+    
+     /*second (min:180,max:86400)*/
+     "rekey_interval":3600,
+    
+     /*enable debug mode*/
+     "debug": true,
+    
+     /*DNS servers*/
+     "dns_servers":["1.1.1.1","8.8.8.8"],
+
+     /*it will add the local IP address to the list of DNS servers*/
+     "use_local_dns_sever":true
+  },
+ 
+ 
+  /***/
+  "tun":{
+    /**/
+    "enable" : true,
+
+    /*MTU (min:1200,max:4000)*/
+    "mtu" : 1420,
+
+    /*IP address list, assigned to the TUN interface after creation (min:0,max:32)*/
+    "ip_list" : ["172.16.0.1/24"],
+
+    /*optional interface name (min:4,max:20)*/
+    "name" : "goconnect",
+
+    /*Internal routes. In case of an empty list, the tun interface will be used as the default output interface of the VPN system (min:0,max:256)*/
+    "routes" : [],
+
+    /*Called after the Tun interface initialization*/
+    "up_commands" : [
+                    "/usr/sbin/iptables -P FORWARD ACCEPT",
+                    "/usr/sbin/iptables -A POSTROUTING -t nat -s 172.16.0.0/24 -j MASQUERADE"
+                  ],
+
+    /*Called after the Tun interface termination and before Tun interface initialization*/
+    "down_commands" : [
+                      "/usr/sbin/iptables -D POSTROUTING -t nat -s 172.16.0.0/24 -j MASQUERADE"
+                    ]
+  },
+  
+  /***/
+  "flow_manager" : {
+    /*Flow manager hash slots count (min:100,max:1024000)*/
+    "hash_slots" : 64000,
+
+    /*Automatically remove a flow from the flow table when It remains inactive for this period of time (min:10,max:3700)(second)*/
+    "inactive_life_time" : 600,
+
+    /*Maximum active flows in the flow table (min:10000,max:10240000)*/
+    "maximum_flow_count" : 512000
+  },  
+  
+  
+  /***/
+  "authentication":{
+    /*Dummy authenticator temporary data file*/
+    "dummy_auth_config_path":"/tmp/dummy.bin",
+    
+    /*Enable Dummy authentication module*/
+    "enable_dummy":true
+  },
+  
+  
+  /***/
+  "log":{
+    /*Logger target. can be a file or a Syslog server. for example (syslog:udp:192.168.1.1:514)*/
+    "log_file":"/var/log/goconnect.log"
+  },
+  
+  
+  /***/
+  "db":{
+    
+    /*Database driver, Can be sqlite or mysql*/
+    "driver":"sqlite3",
+
+    /*Database driver parameters, for sqlite */
+    "parameters":"/var/log/goconnect.db"
+    
+    /*"parameters":"tcp:localhost:3306*goconnect/user/password" for mysql*/
+  },
+
+  /***/
+  "ip_pool":{
+    
+    /*IP pool start range*/
+    "start":"172.16.0.2",
+
+    /*IP pool end range*/
+    "end":"172.16.0.254"
+  },
+
+  /***/
+  "command":{
+    /*Enable*/
+    "enable":true,
+
+    /*Certificate file*/
+    "certificate":"",
+
+    /*Key file*/
+    "key":"",
+
+    /*Static data path*/
+    "static_data":"ui/",
+  
+    /*Serve static contents*/
+    "serve_static_contents":true,
+
+    /*Server bind IP and port*/
+    "bind_address":"127.0.0.1:4443",
+
+    /*Valid clients IP address list*/
+    "valid_clients":["127.0.0.1"],
+
+    /*Allowing loopback IP to use APIs without authentication*/
+    "maintenance_hook": true,
+
+    /*Authentication token lifetime (second) (min:60,max:3600)*/
+    "token_life_time": 1800
+  },
+
+  /***/
+
+  "objects" :[
+
+  ],
+
+  "policy" : [
+
+  ]
+}
